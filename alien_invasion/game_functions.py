@@ -150,7 +150,7 @@ def check_collision(ai_settings, screen, sb, stats, ship, bullets, aliens):
 
    # create a new fleet if the user shoots all existing aliens and advance to the next wave 
    if len(aliens) == 0: 
-    advance_to_next_wave(ai_settings, screen, sb, stats, ship, bullets, aliens)  
+      advance_to_next_wave(ai_settings, screen, sb, stats, ship, bullets, aliens)  
 
 def advance_to_next_wave(ai_settings, screen, sb, stats, ship, bullets, aliens):
    '''Update statistics and settings, and advance to the next wave'''
