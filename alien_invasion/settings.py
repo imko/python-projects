@@ -7,7 +7,7 @@ class Settings():
       # screen settings 
       self.screen_width = 1250
       self.screen_height = 750
-      self.bg_color = (230, 230, 230) # white
+      self.bg_color = (230, 230, 230) # grey
 
       # ship settings
       self.ship_limit = 2 
@@ -19,7 +19,7 @@ class Settings():
       self.bullet_allowed = 5 
 
       # alien settings  
-      self.fleet_drop_speed = 15 
+      self.fleet_drop_speed = 10 
 
       # score settings 
       self.speed_up_scale = 1.2 

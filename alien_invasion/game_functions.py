@@ -9,24 +9,25 @@ def check_events(ai_settings, screen, stats, play_button, sb, ship, bullets, ali
    for event in pygame.event.get():
       if event.type == pygame.QUIT:
          sys.exit() 
-      elif stats.game_active and event.type == pygame.KEYDOWN:
-         check_keydown_event(event, ai_settings, screen, ship, bullets)
+      elif event.type == pygame.KEYDOWN:
+         check_keydown_event(event, ai_settings, screen, stats, ship, bullets)
       elif event.type == pygame.KEYUP: 
          check_keyup_event(ship, event)
       elif event.type == pygame.MOUSEBUTTONDOWN: 
          mouse_x, mouse_y = pygame.mouse.get_pos() 
          check_play_button(ai_settings, screen, stats, play_button, sb, mouse_x, mouse_y, ship, bullets, aliens)
 
-def check_keydown_event(event, ai_settings, screen, ship, bullets): 
+def check_keydown_event(event, ai_settings, screen, stats, ship, bullets): 
    '''Check keydown event'''
-   if event.key == pygame.K_RIGHT:
-      ship.moving_right = True 
-   elif event.key == pygame.K_LEFT:
-      ship.moving_left = True 
-   elif event.key == pygame.K_SPACE: 
-      fire_bullet(ai_settings, screen, ship, bullets)
-   elif event.key == pygame.K_q: 
+   if event.key == pygame.K_q: 
       sys.exit() 
+   if stats.game_active:
+      if event.key == pygame.K_RIGHT:
+         ship.moving_right = True 
+      elif event.key == pygame.K_LEFT:
+         ship.moving_left = True 
+      elif event.key == pygame.K_SPACE: 
+         fire_bullet(ai_settings, screen, ship, bullets)
 
 def check_keyup_event(ship, event):
    '''Check keyup event'''
@@ -83,6 +84,7 @@ def update_aliens(ai_settings, screen, stats, sb, ship, bullets, aliens):
 
    # detect any collisions between ship and alien 
    if pygame.sprite.spritecollideany(ship, aliens):
+      display_message('Aliens Got the Ship!')
       ship_hit(ai_settings, screen, stats, sb, ship, bullets, aliens)
 
    check_aliens_bottom(ai_settings, screen, stats, sb, ship, bullets, aliens) # check if aliens have reached the bottom 
@@ -176,8 +178,14 @@ def check_aliens_bottom(ai_settings, screen, stats, sb, ship, bullets, aliens):
       # check if the alien reached the bottom 
       if alien.rect.bottom >= screen.get_rect().bottom: 
          # same logic as when aliens collide with the ship 
+         display_message('Aliens Reached the Bottom!') 
          ship_hit(ai_settings, screen, stats, sb, ship, bullets, aliens)
          break 
+
+def display_message(message): 
+   '''Display message how the current wave ended'''
+   print(message)
+   pygame.time.wait(1500) # wait for 1.5 seconds
 
 def reset_game(ai_settings, screen, sb, ship, bullets, aliens):
    '''Reset game to start'''
