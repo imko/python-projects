@@ -186,6 +186,7 @@ def reset_game(ai_settings, screen, sb, ship, bullets, aliens):
    sb.prep_score() 
    sb.prep_high_score() 
    sb.prep_level() 
+   sb.prep_ship() 
 
    # create a new fleet and center the ship 
    create_fleet(ai_settings, screen, ship, aliens)
