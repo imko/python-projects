@@ -17,13 +17,14 @@ class ScoreBoard():
       self.text_color = (30, 30, 30)
       self.font = pygame.font.Font(None, 48)
 
+      # prep all elements on scoreboard 
       self.prep_score() 
       self.prep_high_score() 
       self.prep_level() 
       self.prep_ship()
 
    def prep_score(self): 
-      '''Render score image and set position'''
+      '''Render score image and set its position at top-right'''
       score = "{:,}".format(int(round(self.stats.score, -1))) # rounds to nearest multiple of 10 
       self.score_image = self.font.render(score, True, self.text_color, self.ai_settings.bg_color) 
 
@@ -33,6 +34,7 @@ class ScoreBoard():
       self.score_rect.top = 20 
 
    def prep_high_score(self): 
+      '''Update high score and set its position at top-center'''
       high_score = "{:,}".format(int(round(self.stats.high_score, -1))) 
       self.high_score_image = self.font.render(high_score, True, self.text_color, self.ai_settings.bg_color)
 
@@ -42,6 +44,7 @@ class ScoreBoard():
       self.high_score_rect.top = self.score_rect.top 
 
    def prep_level(self):
+      '''Update level and set its position at top-right, below score board'''
       level = str(self.stats.level) 
       self.level_image = self.font.render(level, True, self.text_color, self.ai_settings.bg_color)
 
@@ -51,7 +54,7 @@ class ScoreBoard():
       self.level_rect.top = self.score_rect.bottom  
 
    def prep_ship(self):
-      '''Check how many ships are left'''
+      '''Update the number of available ships and set its position at top-left'''
       self.ships = Group() 
       for number_ships in range(self.stats.available_ships): 
          ship = Ship(self.ai_settings, self.screen) 

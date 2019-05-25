@@ -6,6 +6,7 @@ class Alien(Sprite):
    '''A class that holds data for a single alien in the fleet'''
    
    def __init__(self, ai_settings, screen):
+      '''Initialize alien attributes and sets its position'''
       super(Alien, self).__init__() 
       self.screen = screen # mostly used for blit 
       self.ai_settings = ai_settings 

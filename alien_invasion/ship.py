@@ -41,4 +41,5 @@ class Ship(Sprite):
       self.screen.blit(self.image, self.rect)
 
    def center_ship(self):
+      '''Center the ship on the screen'''
       self.center = float(self.screen_rect.centerx)

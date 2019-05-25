@@ -4,6 +4,7 @@ class Button():
    '''A class for a button in Alien Invasion'''
 
    def __init__(self, ai_settings, screen, msg):
+      '''Initialize button settings and attributes'''
       self.ai_settings = ai_settings
       self.screen = screen 
       self.screen_rect = screen.get_rect() 

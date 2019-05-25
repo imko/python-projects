@@ -13,10 +13,10 @@ def run_game():
    # initialize pygame, settings, and screen object 
    pygame.init() 
    ai_settings = Settings() 
-   screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height)) # surface 
+   screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height)) # Surface 
    pygame.display.set_caption('Alien Invasion')
 
-   # make a ship, stats, a group of bullets and aliens 
+   # make a ship, stats, play button, scoreboard, and a group of bullets and aliens 
    ship = Ship(ai_settings, screen)
    stats = GameStats(ai_settings)
    aliens = Group() 
