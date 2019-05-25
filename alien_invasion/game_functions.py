@@ -8,6 +8,7 @@ def check_events(ai_settings, screen, stats, play_button, sb, ship, bullets, ali
    '''Respond to keyboard / mouse events'''
    for event in pygame.event.get():
       if event.type == pygame.QUIT:
+         save_high_score(stats) 
          sys.exit() 
       elif event.type == pygame.KEYDOWN:
          check_keydown_event(event, ai_settings, screen, stats, ship, bullets)
@@ -20,6 +21,7 @@ def check_events(ai_settings, screen, stats, play_button, sb, ship, bullets, ali
 def check_keydown_event(event, ai_settings, screen, stats, ship, bullets): 
    '''Check keydown event'''
    if event.key == pygame.K_q: 
+      save_high_score(stats) 
       sys.exit() 
    if stats.game_active:
       if event.key == pygame.K_RIGHT:
@@ -211,3 +213,9 @@ def check_high_score(sb, stats):
    if stats.score > stats.high_score: 
       stats.high_score = stats.score 
       sb.prep_high_score() 
+
+def save_high_score(stats): 
+   '''Save current high score to a file'''
+   filename = 'high_score.txt'
+   with open(filename, 'w') as file_object:
+      file_object.write(str(stats.high_score))

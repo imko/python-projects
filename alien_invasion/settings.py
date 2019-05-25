@@ -16,7 +16,7 @@ class Settings():
       self.bullet_width = 5 
       self.bullet_height = 25 
       self.bullet_color = (60, 60, 60) 
-      self.bullet_allowed = 5 
+      self.bullet_allowed = 10 
 
       # alien settings  
       self.fleet_drop_speed = 10 
