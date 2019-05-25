@@ -9,7 +9,7 @@ def check_events(ai_settings, screen, stats, play_button, sb, ship, bullets, ali
    for event in pygame.event.get():
       if event.type == pygame.QUIT:
          sys.exit() 
-      elif event.type == pygame.KEYDOWN:
+      elif stats.game_active and event.type == pygame.KEYDOWN:
          check_keydown_event(event, ai_settings, screen, ship, bullets)
       elif event.type == pygame.KEYUP: 
          check_keyup_event(ship, event)
@@ -107,7 +107,7 @@ def get_number_aliens_x_y(ai_settings, screen, ship):
    '''Calculate and return number of available spaces in tuple'''
    alien = Alien(ai_settings, screen)
    available_space_x = ai_settings.screen_width - (2 * alien.rect.width) # leaving spaces at each edge  
-   available_space_y = ai_settings.screen_height - (3 * alien.rect.height - ship.rect.height) # 1 empty space on top, 2 empty spaces between alien and the ship
+   available_space_y = ai_settings.screen_height - (4 * alien.rect.height - ship.rect.height) # 1 empty space on top, 3 empty spaces between alien and the ship
    
    return (int(available_space_y / (2 * alien.rect.height)), int(available_space_x / (2 * alien.rect.width)))  
 
@@ -118,7 +118,7 @@ def create_alien(ai_settings, screen, row_number, column_number, aliens):
    # adjust position in x and y 
    alien.x = alien.rect.width + (2 * alien.rect.width * column_number) 
    alien.rect.x = alien.x 
-   alien.y = alien.rect.height + (2 * alien.rect.height * row_number)
+   alien.y = alien.rect.height + (2 * alien.rect.height * row_number) + (alien.rect.height / 2)
    alien.rect.y = alien.y 
 
    aliens.add(alien) 
