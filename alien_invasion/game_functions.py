@@ -1,10 +1,12 @@
 import sys 
 import pygame 
 
+from time import sleep # for testing 
+
 from bullet import Bullet 
 from alien import Alien 
 
-def check_events(ai_settings, screen, ship, bullets):
+def check_events(ai_settings, screen, stats, play_button, ship, bullets, aliens):
    '''Respond to keyboard / mouse events'''
    for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -13,6 +15,9 @@ def check_events(ai_settings, screen, ship, bullets):
          check_keydown_event(event, ai_settings, screen, ship, bullets)
       elif event.type == pygame.KEYUP: 
          check_keyup_event(ship, event)
+      elif event.type == pygame.MOUSEBUTTONDOWN: 
+         mouse_x, mouse_y = pygame.mouse.get_pos() 
+         check_play_button(ai_settings, screen, stats, play_button, mouse_x, mouse_y, ship, bullets, aliens)
 
 def check_keydown_event(event, ai_settings, screen, ship, bullets): 
    '''Check keydown event'''
@@ -31,8 +36,16 @@ def check_keyup_event(ship, event):
       ship.moving_right = False 
    elif event.key == pygame.K_LEFT:
       ship.moving_left = False 
+
+def check_play_button(ai_settings, screen, stats, play_button, mouse_x, mouse_y, ship, bullets, aliens):
+   '''Start a new game if play button is pressed'''
+   if play_button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active: 
+      pygame.mouse.set_visible(False) 
+      stats.reset_stats() 
+      stats.game_active = True 
+      reset_game(ai_settings, screen, ship, bullets, aliens)
       
-def update_screen(ai_settings, screen, ship, bullets, aliens):
+def update_screen(ai_settings, screen, stats, play_button, ship, bullets, aliens):
    '''Update images on the screen and flip to the new screen'''
    screen.fill(ai_settings.bg_color) # redraw screen during each pass 
    ship.blitme() # draw ship AFTER filling the background 
@@ -43,9 +56,13 @@ def update_screen(ai_settings, screen, ship, bullets, aliens):
    for bullet in bullets: 
       bullet.draw_bullet()
 
+   # draw 'PLAY' button if game is inactive 
+   if not stats.game_active: 
+      play_button.draw_button()
+
    pygame.display.flip() # make the most recently drawn screen visible (erases old screen so that only new screen is visible)
 
-def update_bullets(bullets): 
+def update_bullets(ai_settings, screen, ship, bullets, aliens): 
    '''Update bullets and remove old bullets if necessary''' 
    bullets.update() # automatically calls update() in bullets Group 
 
@@ -54,10 +71,19 @@ def update_bullets(bullets):
       if bullet.rect.bottom <= 0: 
          bullets.remove(bullet)
 
-def update_aliens(ai_settings, aliens):
+   # check for any bullets that have hit aliens, and remove if so 
+   check_collision(ai_settings, screen, ship, bullets, aliens)
+
+def update_aliens(ai_settings, screen, stats, ship, bullets, aliens):
    '''Update positions of all aliens in the fleet'''
    check_fleet_edges(ai_settings, aliens)
    aliens.update() 
+
+   # detect any collisions between ship and alien 
+   if pygame.sprite.spritecollideany(ship, aliens):
+      ship_hit(ai_settings, screen, stats, ship, bullets, aliens)
+
+   check_aliens_bottom(ai_settings, screen, stats, ship, bullets, aliens)
 
 def fire_bullet(ai_settings, screen, ship, bullets):
    '''Fire a bullet if limit is not reached'''
@@ -108,3 +134,39 @@ def change_fleet_direction(ai_settings, aliens):
       alien.rect.y += ai_settings.fleet_drop_speed 
 
    ai_settings.fleet_direction *= -1 # change direction 
+
+def check_collision(ai_settings, screen, ship, bullets, aliens):
+   '''Check collision and respond appropriately'''
+   collisions = pygame.sprite.groupcollide(bullets, aliens, True, True) 
+
+   # create a new fleet if the user shoots all existing aliens 
+   if len(aliens) == 0: 
+      bullets.empty() 
+      create_fleet(ai_settings, screen, ship, aliens)
+
+def ship_hit(ai_settings, screen, stats, ship, bullets, aliens): 
+   '''Respond to ship being hit by alien'''
+   if stats.available_ships > 0:
+      # lost one available ship  
+      stats.available_ships -= 1 
+      reset_game(ai_settings, screen, ship, bullets, aliens)
+   else: 
+      stats.game_active = False 
+      pygame.mouse.set_visible(True) 
+
+def check_aliens_bottom(ai_settings, screen, stats, ship, bullets, aliens):
+   '''Detects any alien that got to the bottom of the screen''' 
+   for alien in aliens.sprites(): 
+      # check if the alien reached the bottom 
+      if alien.rect.bottom >= screen.get_rect().bottom: 
+         ship_hit(ai_settings, screen, stats, ship, bullets, aliens)
+         break 
+
+def reset_game(ai_settings, screen, ship, bullets, aliens):
+   # reset lists of bullets and aliens 
+   bullets.empty()
+   aliens.empty() 
+
+   # create a new fleet and center the ship 
+   create_fleet(ai_settings, screen, ship, aliens)
+   ship.center_ship() 
